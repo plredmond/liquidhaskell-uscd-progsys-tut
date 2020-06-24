@@ -5,5 +5,6 @@ let
     url = "https://github.com/${owner}/${repo}/archive/${rev}.tar.gz";
   };
   nixpkgs = import (fetcher (builtins.fromJSON (builtins.readFile ./versions.json)).nixpkgs) {};
-  drv = nixpkgs.haskellPackages.callCabal2nix "abcexample" ./. {};
+  source = nixpkgs.nix-gitignore.gitignoreSource [] ./.;
+  drv = nixpkgs.haskellPackages.callCabal2nix "abcexample" source {};
 in if nixpkgs.lib.inNixShell then drv.env else drv
