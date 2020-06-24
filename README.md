@@ -33,3 +33,43 @@ else
     nix-build
 fi
 ```
+
+# Bashrc aliases
+
+you might want aliases to remind you not to use cabal commands outside of `nix-shell` and not to use nix commands inside of `nix-shell`o
+
+`~/.bashrc`
+```sh
+# only use cabal/ghc/ghcid while in a project's nix-shell environment to force
+# dependency resolution to take place within nix
+function require_nix_shell {
+    if [ -z "$IN_NIX_SHELL" ]; then
+        echo try again in nix-shell
+        return
+    fi
+    "$@"
+}
+alias cabal='require_nix_shell cabal'
+alias ghc='require_nix_shell ghc'
+alias ghcid='require_nix_shell ghcid'
+alias stack='require_nix_shell stack'
+```
+```sh
+# only use nix-build outside of nix-shell, since the result produced is not
+# expected
+function disallow_nix_shell {
+    if [ -n "$IN_NIX_SHELL" ]; then
+        echo try again outside of nix-shell
+        return
+    fi
+    "$@"
+}
+alias nix-build='disallow_nix_shell nix-build'
+```
+
+# TODO
+
+explore how overriding dependency versions works
+
+* https://gist.github.com/vaibhavsagar/11b135faa1f95cd483b26e34e8752000#file-default-nix-L68-L98
+* https://gist.github.com/vaibhavsagar/212273a6af6896fb79dd2c866b03ce5a
