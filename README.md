@@ -5,7 +5,7 @@
     * do not run `nix-build` inside `nix-shell` because that won't produce a `result` containing your project
 * release with `nix-build`
 
-this pattern, along with the contents of `versions.json`, `default.nix` etc is borrowed from [vaibhavsagar](http://github.com/vaibhavsagar) who writes about an earlier version of this in [Quick and Easy Nixpkgs Pinning](https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/)
+this pattern, along with the contents of `versions.json`, `default.nix` etc is borrowed from [vaibhavsagar](http://github.com/vaibhavsagar) who writes about pinning in [Quick and Easy Nixpkgs Pinning](https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/)
 
 # Doctest sharp edges
 
