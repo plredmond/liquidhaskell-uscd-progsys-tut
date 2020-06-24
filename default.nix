@@ -1,3 +1,4 @@
+# mostly from https://vaibhavsagar.com/blog/2018/05/27/quick-easy-nixpkgs-pinning/
 let
   # vnixpinupdater versions.json nixpkgs nixos-20.03
   fetcher = { owner, repo, rev, sha256, ... }: builtins.fetchTarball {
