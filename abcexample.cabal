@@ -1,0 +1,28 @@
+cabal-version: 2.4
+name: abcexample
+version: 0.1.0.0
+
+-- https://www.haskell.org/cabal/users-guide/developing-packages.html#pkg-field-data-files
+data-files:
+
+
+library
+  hs-source-dirs:       lib
+  exposed-modules:      Paths_abcexample, Abcexample
+  build-depends:        base
+  default-language:     Haskell2010
+
+
+executable abcexample
+  main-is:              Main.hs
+  build-depends:        base, abcexample
+  default-language:     Haskell2010
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+
+
+test-suite abcexample_test
+  main-is:              Doctest.hs
+  build-depends:        base, abcexample, doctest, QuickCheck
+  default-language:     Haskell2010
+  ghc-options:          -threaded -rtsopts -with-rtsopts=-N
+  type:                 exitcode-stdio-1.0
