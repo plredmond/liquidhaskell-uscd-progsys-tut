@@ -11,13 +11,23 @@ let
   nixpkgs = import
     (fetcher (builtins.fromJSON (builtins.readFile ./versions.json)).nixpkgs)
     { inherit config; };
+  # fetch pinned version of liquidhaskell
+  lh = nixpkgs.fetchFromGitHub {
+    owner = "ucsd-progsys";
+    repo = "liquidhaskell";
+    rev = "3bc467162ba285bf2c1529dafce21a20bb9aab8e";
+    sha256 = "1g7ad4fxkz93p4pf80v36gj6cadwzisisg6kc0d6pv683m8wmign";
+  };
   # optionally, override haskell compiler version and/or dependencies in nixpkgs
   haskellPackages = nixpkgs.haskell.packages."ghc8101".override (
     old: {
-      overrides = self: super: {
+      overrides = self: super: rec {
         # nixos-20.03 has an old version of doctest and the 0.17 has a test that calls cabal
         doctest = nixpkgs.haskell.lib.dontCheck
-          (self.callHackageDirect { pkg = "doctest"; ver = "0.16.2"; sha256 = "11py87v0w70x60l2a9grv2vm2kfacczdxhn0rkyvisa4fsan936j"; } {});
+          (self.callHackageDirect { pkg = "doctest"; ver = "0.17"; sha256 = "11py87v0w70x60l2a9grv2vm2kfacczdxhn0rkyvisa4fsan936j"; } {});
+        # parts of liquidhaskell are not yet on hackage
+        liquid-base = self.callCabal2nix "liquid-base" (lh + "/liquid-base") { inherit liquid-ghc-prim; };
+        liquid-ghc-prim = self.callCabal2nix "liquid-ghc-prim" (lh + "/liquid-ghc-prim") {};
       };
     }
   );
