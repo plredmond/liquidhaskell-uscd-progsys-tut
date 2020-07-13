@@ -42,8 +42,7 @@ let
         tasty-rerun = doJailbreak super.tasty-rerun;
         text-format = doJailbreak super.text-format;
         # also fix doctest
-        #doctest =
-        #  (self.callHackageDirect { pkg = "doctest"; ver = "0.16.3"; sha256 = "11py87v0w70x60l2a9grv2vm2kfacczdxhn0rkyvisa4fsan936j"; } {});
+        doctest = dontCheck (self.callHackage "doctest" "0.16.3" {});
       };
     }
   );
