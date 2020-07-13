@@ -18,14 +18,6 @@ main = do
     putStrLn "Hello world!"
     putStrLn $ "abcexample is " <> show Paths_abcexample.version
 
-{-@ one :: {v:Int | v = 1 } @-}
-one :: Int
-one = 1
-
-{-@ assume notThree :: {v : Nat | v != 3 } @-}
+{-@ notThree :: {v : Nat | v != 3 } @-}
 notThree :: Int
 notThree = 4
-
-{-@ two :: Nat @-}
-two :: Int
-two = one + one

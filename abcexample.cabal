@@ -9,21 +9,21 @@ data-files:
 library
   hs-source-dirs:       lib
   exposed-modules:      Paths_abcexample, Abcexample
-  build-depends:        liquid-base
+  build-depends:        liquidhaskell, liquid-base
   default-language:     Haskell2010
   ghc-options:          -fplugin=LiquidHaskell
 
 
 executable abcexample
   main-is:              Main.hs
-  build-depends:        liquid-base, abcexample
+  build-depends:        liquidhaskell, liquid-base, abcexample
   default-language:     Haskell2010
   ghc-options:          -fplugin=LiquidHaskell -threaded -rtsopts -with-rtsopts=-N
 
 
-test-suite abcexample_test
-  main-is:              Doctest.hs
-  build-depends:        liquid-base, abcexample, doctest, QuickCheck
-  default-language:     Haskell2010
-  ghc-options:          -fplugin=LiquidHaskell -threaded -rtsopts -with-rtsopts=-N
-  type:                 exitcode-stdio-1.0
+--test-suite abcexample_test
+--  main-is:              Doctest.hs
+--  build-depends:        liquidhaskell, liquid-base, abcexample, doctest, QuickCheck
+--  default-language:     Haskell2010
+--  ghc-options:          -fplugin=LiquidHaskell -threaded -rtsopts -with-rtsopts=-N
+--  type:                 exitcode-stdio-1.0
