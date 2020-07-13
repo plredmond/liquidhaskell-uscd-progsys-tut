@@ -1,4 +1,4 @@
-{ config ? { allowBroken = true; }, ... }:
+{ config ? { /*allowBroken = true;*/ }, ... }:
 let
   # fetch pinned version of nixpkgs
   nixpkgs = import (
@@ -15,9 +15,9 @@ let
     sha256 = "0qcmadfpanf9ivbf25kwrpggq515dq90alhnm7zm5qn8yg2qw7xg";
     fetchSubmodules = true; # liquid-fixpoint is a submodule
   };
-  # make sure a haskell package has z3 at test-time and at run-time
-  withZ3 = pkg: nixpkgs.haskell.lib.overrideCabal pkg (old: { buildTools = old.buildTools or [] ++ [ nixpkgs.z3 ]; });
-  # override haskell compiler version and dependencies in nixpkgs
+  # function to make sure a haskell package has z3 at build-time and test-time
+  usingZ3 = pkg: nixpkgs.haskell.lib.overrideCabal pkg (old: { buildTools = old.buildTools or [] ++ [ nixpkgs.z3 ]; });
+  # override haskell compiler version, add and override dependencies in nixpkgs
   haskellPackages = nixpkgs.haskell.packages."ghc8101".override (
     old: {
       all-cabal-hashes = nixpkgs.fetchurl {
@@ -26,8 +26,8 @@ let
       };
       overrides = self: super: with nixpkgs.haskell.lib; rec {
         # parts of liquidhaskell are not yet on hackage, and the hackage version is old, so here we build all needed components from source
-        liquid-base = withZ3 (self.callCabal2nix "liquid-base" (lh + "/liquid-base") { inherit liquid-ghc-prim; inherit liquidhaskell; });
-        liquid-ghc-prim = withZ3 (self.callCabal2nix "liquid-ghc-prim" (lh + "/liquid-ghc-prim") { inherit liquidhaskell; });
+        liquid-base = usingZ3 (self.callCabal2nix "liquid-base" (lh + "/liquid-base") { inherit liquid-ghc-prim; inherit liquidhaskell; });
+        liquid-ghc-prim = usingZ3 (self.callCabal2nix "liquid-ghc-prim" (lh + "/liquid-ghc-prim") { inherit liquidhaskell; });
         liquidhaskell = dontCheck (self.callCabal2nix "liquidhaskell" lh { inherit liquid-fixpoint; });
         liquid-fixpoint = self.callCabal2nix "liquid-fixpoint" (lh + "/liquid-fixpoint") {};
         # some dependencies of liquidhaskell had problems with version ranges or tests
@@ -46,11 +46,11 @@ let
       };
     }
   );
-  # function to bring in devtools
-  devtools = old: { nativeBuildInputs = with nixpkgs.pkgs; old.nativeBuildInputs ++ [ cabal-install ghcid ]; }; # ghc and hpack are automatically included
-  # ignore files specified by gitignore
+  # function to bring in devtools to any environment
+  devtools = old: { nativeBuildInputs = old.nativeBuildInputs ++ [ nixpkgs.cabal-install nixpkgs.ghcid ]; }; # ghc and hpack are automatically included
+  # ignore files specified by gitignore in nix-build
   source = nixpkgs.nix-gitignore.gitignoreSource [] ./.;
-  # use overridden-haskellPackages to call gitignored-source and produce either package or env
-  drv = withZ3 (haskellPackages.callCabal2nix "abcexample" source {});
+  # use overridden-haskellPackages to call gitignored-source
+  drv = usingZ3 (haskellPackages.callCabal2nix "abcexample" source {});
 in
 if nixpkgs.lib.inNixShell then drv.env.overrideAttrs devtools else drv
