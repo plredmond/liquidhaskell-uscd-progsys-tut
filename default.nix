@@ -3,8 +3,8 @@ let
   # fetch pinned version of nixpkgs
   nixpkgs = import (
     builtins.fetchTarball {
-      url = "https://github.com/NixOS/nixpkgs-channels/archive/674ab2dffa58dab8b6a97a26a0156133dbd90378.tar.gz";
-      sha256 = "1vh0npx1xkr1lwgdmg7zlai7mhl0w40h888qrfv5a1qcyp8x8d6p";
+      url = "https://github.com/NixOS/nixpkgs-channels/archive/1a92d0abfcdbafc5c6e2fdc24abf2cc5e011ad5a.tar.gz";
+      sha256 = "1f9ypp9q7r5p1bzm119yfg202fbm83csmlzwv33p1kf76m2p7mwd";
     }
   ) { inherit config; };
   # fetch pinned version of liquidhaskell
@@ -46,11 +46,13 @@ let
       };
     }
   );
-  # function to bring in devtools to any environment
+  # function to manually run doctest in the nix-build environment
+  usingDoctest = pkg: nixpkgs.haskell.lib.overrideCabal pkg (old: { preCheck = "${nixpkgs.python3}/bin/python gen-ghc-env.py base"; });
+  # function to bring devtools in to a package environment
   devtools = old: { nativeBuildInputs = old.nativeBuildInputs ++ [ nixpkgs.cabal-install nixpkgs.ghcid ]; }; # ghc and hpack are automatically included
   # ignore files specified by gitignore in nix-build
   source = nixpkgs.nix-gitignore.gitignoreSource [] ./.;
   # use overridden-haskellPackages to call gitignored-source
-  drv = usingZ3 (haskellPackages.callCabal2nix "abcexample" source {});
+  drv = usingDoctest (usingZ3 (haskellPackages.callCabal2nix "abcexample" source {}));
 in
 if nixpkgs.lib.inNixShell then drv.env.overrideAttrs devtools else drv
