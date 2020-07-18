@@ -10,6 +10,8 @@ library
   hs-source-dirs:       lib
   exposed-modules:      Paths_ucsd_progsys_lh_tut
                       , Lib
+                      , Sec1
+                      , Sec2
   build-depends:        liquidhaskell, liquid-base, containers
   default-language:     Haskell2010
   ghc-options:          -fplugin=LiquidHaskell
