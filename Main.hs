@@ -1,6 +1,6 @@
 module Main where
 
-import qualified Abcexample
+import qualified Lib
 
 main :: IO ()
-main = Abcexample.main
+main = Lib.main

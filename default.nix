@@ -53,6 +53,6 @@ let
   # ignore files specified by gitignore in nix-build
   source = nixpkgs.nix-gitignore.gitignoreSource [] ./.;
   # use overridden-haskellPackages to call gitignored-source
-  drv = usingDoctest (usingZ3 (haskellPackages.callCabal2nix "abcexample" source {}));
+  drv = usingDoctest (usingZ3 (haskellPackages.callCabal2nix "ucsd-progsys-lh-tut" source {}));
 in
 if nixpkgs.lib.inNixShell then drv.env.overrideAttrs devtools else drv
