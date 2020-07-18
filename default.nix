@@ -25,30 +25,34 @@ let
       };
       overrides = self: super: with nixpkgs.haskell.lib; rec {
         # parts of liquidhaskell are not yet on hackage, and the hackage version is old, so here we build all needed components from source
-        liquid-base = usingZ3 (
+        liquid-base =
           dontHaddock (
-            self.callCabal2nix "liquid-base" (lh-src + "/liquid-base")
-              { inherit liquid-ghc-prim; inherit liquidhaskell; }
-          )
-        );
-        liquid-ghc-prim = usingZ3 (
+            usingZ3 (
+              self.callCabal2nix "liquid-base" (lh-src + "/liquid-base")
+                { inherit liquid-ghc-prim; inherit liquidhaskell; }
+            )
+          );
+        liquid-ghc-prim =
           dontHaddock (
-            self.callCabal2nix "liquid-ghc-prim" (lh-src + "/liquid-ghc-prim")
-              { inherit liquidhaskell; }
-          )
-        );
-        liquidhaskell = dontCheck (
-          self.callCabal2nix "liquidhaskell" lh-src
-            { inherit liquid-fixpoint; }
-        );
-        liquid-fixpoint = self.callCabal2nix "liquid-fixpoint" (
-          nixpkgs.fetchFromGitHub {
-            owner = "ucsd-progsys";
-            repo = "liquid-fixpoint";
-            rev = "a4e303bc55e8f596893e661954e20c983a61215f";
-            sha256 = "0md40v4dkps370idf66fhskbr3hhvd65ipx8ygvchpsqrpiskhql";
-          }
-        ) {};
+            usingZ3 (
+              self.callCabal2nix "liquid-ghc-prim" (lh-src + "/liquid-ghc-prim")
+                { inherit liquidhaskell; }
+            )
+          );
+        liquidhaskell =
+          dontCheck (
+            self.callCabal2nix "liquidhaskell" lh-src
+              { inherit liquid-fixpoint; }
+          );
+        liquid-fixpoint =
+          self.callCabal2nix "liquid-fixpoint" (
+            nixpkgs.fetchFromGitHub {
+              owner = "ucsd-progsys";
+              repo = "liquid-fixpoint";
+              rev = "a4e303bc55e8f596893e661954e20c983a61215f";
+              sha256 = "0md40v4dkps370idf66fhskbr3hhvd65ipx8ygvchpsqrpiskhql";
+            }
+          ) {};
         # some dependencies of liquidhaskell had problems with version ranges or tests
         ChasingBottoms = doJailbreak super.ChasingBottoms;
         Diff = dontCheck super.Diff;
