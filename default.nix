@@ -41,18 +41,14 @@ let
         optics-th = self.callHackage "optics-th" "0.3" {};
         tasty-rerun = doJailbreak super.tasty-rerun;
         text-format = doJailbreak super.text-format;
-        # also fix doctest
-        doctest = dontCheck (self.callHackage "doctest" "0.16.3" {});
       };
     }
   );
-  # function to manually run doctest in the nix-build environment
-  usingDoctest = pkg: nixpkgs.haskell.lib.overrideCabal pkg (old: { preCheck = "${nixpkgs.python3}/bin/python gen-ghc-env.py base"; });
   # function to bring devtools in to a package environment
   devtools = old: { nativeBuildInputs = old.nativeBuildInputs ++ [ nixpkgs.cabal-install nixpkgs.ghcid ]; }; # ghc and hpack are automatically included
   # ignore files specified by gitignore in nix-build
   source = nixpkgs.nix-gitignore.gitignoreSource [] ./.;
   # use overridden-haskellPackages to call gitignored-source
-  drv = usingDoctest (usingZ3 (haskellPackages.callCabal2nix "ucsd-progsys-lh-tut" source {}));
+  drv = usingZ3 (haskellPackages.callCabal2nix "ucsd-progsys-lh-tut" source {});
 in
 if nixpkgs.lib.inNixShell then drv.env.overrideAttrs devtools else drv
