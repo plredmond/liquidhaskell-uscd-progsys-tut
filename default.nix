@@ -8,7 +8,7 @@ let
     }
   ) { inherit config; };
   # fetch pinned version of liquidhaskell
-  lh = nixpkgs.fetchFromGitHub {
+  lh-src = nixpkgs.fetchFromGitHub {
     owner = "ucsd-progsys";
     repo = "liquidhaskell";
     rev = "26cad4f05171669949fd92fa5a5f584a4950ca7b";
@@ -25,9 +25,18 @@ let
       };
       overrides = self: super: with nixpkgs.haskell.lib; rec {
         # parts of liquidhaskell are not yet on hackage, and the hackage version is old, so here we build all needed components from source
-        liquid-base = usingZ3 (self.callCabal2nix "liquid-base" (lh + "/liquid-base") { inherit liquid-ghc-prim; inherit liquidhaskell; });
-        liquid-ghc-prim = usingZ3 (self.callCabal2nix "liquid-ghc-prim" (lh + "/liquid-ghc-prim") { inherit liquidhaskell; });
-        liquidhaskell = dontCheck (self.callCabal2nix "liquidhaskell" lh { inherit liquid-fixpoint; });
+        liquid-base = usingZ3 (
+          self.callCabal2nix "liquid-base" (lh-src + "/liquid-base")
+            { inherit liquid-ghc-prim; inherit liquidhaskell; }
+        );
+        liquid-ghc-prim = usingZ3 (
+          self.callCabal2nix "liquid-ghc-prim" (lh-src + "/liquid-ghc-prim")
+            { inherit liquidhaskell; }
+        );
+        liquidhaskell = dontCheck (
+          self.callCabal2nix "liquidhaskell" lh-src
+            { inherit liquid-fixpoint; }
+        );
         liquid-fixpoint = self.callCabal2nix "liquid-fixpoint" (
           nixpkgs.fetchFromGitHub {
             owner = "ucsd-progsys";
