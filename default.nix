@@ -12,7 +12,7 @@ let
     owner = "ucsd-progsys";
     repo = "liquidhaskell";
     rev = "26cad4f05171669949fd92fa5a5f584a4950ca7b";
-    sha256 = "02r290fbq1mwfcjj3dgjvfcmnb36rm4jm14gqrli0irgh83gad7h";
+    sha256 = "1xvm005xhzlfm7b7hvc2jr667sgmy9mg47daiw6mmxkfblzjzafa";
   };
   # function to make sure a haskell package has z3 at build-time and test-time
   usingZ3 = pkg: nixpkgs.haskell.lib.overrideCabal pkg (old: { buildTools = old.buildTools or [] ++ [ nixpkgs.z3 ]; });
@@ -65,7 +65,7 @@ let
         tasty-rerun = doJailbreak super.tasty-rerun;
         text-format = doJailbreak super.text-format;
         # also fix doctest
-        doctest = dontCheck (self.callHackage "doctest" "0.16.3" {});
+        doctest = dontCheck (self.callHackage "doctest" "0.17" {});
       };
     }
   );
@@ -77,9 +77,11 @@ let
   source = nixpkgs.nix-gitignore.gitignoreSource [] ./.;
   # use overridden-haskellPackages to call gitignored-source
   drv =
-    usingZ3 (
-      usingDoctest (
-        haskellPackages.callCabal2nix "ucsd-progsys-lh-tut" source {}
+    usingDoctest (
+      usingZ3 (
+        nixpkgs.haskell.lib.dontHaddock (
+          haskellPackages.callCabal2nix "ucsd-progsys-lh-tut" source {}
+        )
       )
     );
 in

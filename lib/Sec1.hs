@@ -1,19 +1,10 @@
-{-# LANGUAGE NoImplicitPrelude, PackageImports #-}
-{-@ LIQUID "--no-termination" @-} -- turn off termination checking, which is important for some examples
 module Sec1 where
-
-import "liquid-base" Prelude
-
--- https://www.haskell.org/cabal/users-guide/developing-packages.html#accessing-data-files-from-package-code
---import Paths_ucsd_progsys_lh_tut (version)
-
--- $setup
--- >>> import Test.QuickCheck
 
 -- * Section 1
 --
 -- Tutorial from here: <https://ucsd-progsys.github.io/liquidhaskell-tutorial/01-intro.html>
 
+{-@ ignore average @-}
 average :: [Int] -> Int
 average xs = sum xs `div` length xs
 
