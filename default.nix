@@ -26,12 +26,16 @@ let
       overrides = self: super: with nixpkgs.haskell.lib; rec {
         # parts of liquidhaskell are not yet on hackage, and the hackage version is old, so here we build all needed components from source
         liquid-base = usingZ3 (
-          self.callCabal2nix "liquid-base" (lh-src + "/liquid-base")
-            { inherit liquid-ghc-prim; inherit liquidhaskell; }
+          dontHaddock (
+            self.callCabal2nix "liquid-base" (lh-src + "/liquid-base")
+              { inherit liquid-ghc-prim; inherit liquidhaskell; }
+          )
         );
         liquid-ghc-prim = usingZ3 (
-          self.callCabal2nix "liquid-ghc-prim" (lh-src + "/liquid-ghc-prim")
-            { inherit liquidhaskell; }
+          dontHaddock (
+            self.callCabal2nix "liquid-ghc-prim" (lh-src + "/liquid-ghc-prim")
+              { inherit liquidhaskell; }
+          )
         );
         liquidhaskell = dontCheck (
           self.callCabal2nix "liquidhaskell" lh-src
