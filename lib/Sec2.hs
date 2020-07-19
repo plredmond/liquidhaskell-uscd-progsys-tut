@@ -10,6 +10,16 @@ module Sec2 where
 --
 -- Tutorial from here: <https://ucsd-progsys.github.io/liquidhaskell-tutorial/02-logic.html>
 
+-- ** semantics
+
+-- | implication
+(==>) :: Bool -> Bool -> Bool
+{-@ (==>) :: p:Bool -> q:Bool -> {v:Bool | v <=> (p ==> q)} @-}
+False ==> False = True
+False ==> True  = True
+True  ==> True  = True
+True  ==> False = False
+
 -- | notes
 --
 --  * predicate is satisfiable if there exists an assignment that makes the
@@ -29,3 +39,27 @@ ex0 = True
 ex0' :: Bool
 {-@ ex0' :: TRUE @-}
 ex0' = False
+
+-- | "predicate that states that a bool is either True or False"
+ex1 :: Bool -> Bool
+{-@ ex1 :: Bool -> TRUE @-}
+ex1 b = b || not b
+
+-- | predicate that states that "a variable cannot be both True and False"
+ex2 :: Bool -> Bool
+{-@ ex2 :: Bool -> FALSE @-}
+ex2 b = b && not b
+
+-- ** exercise: implications and or
+
+-- CONTINUE: this exercise
+
+-- | predicates using implication
+--
+-- "p ==> q" reads "if p is true then q must also be true"
+
+ex3 :: Bool -> Bool -> Bool
+{-@ ex3 :: Bool -> Bool -> TRUE @-}
+ex3 a b = (a && b) ==> a
+
+-- CONTINUE: ex4
