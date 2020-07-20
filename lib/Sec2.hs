@@ -21,6 +21,14 @@ True  ==> True  = True
 True  ==> False = False
 infixr 9 ==>
 
+-- | iff (equality?)
+(<=>) :: Bool -> Bool -> Bool
+{-@ (<=>) :: p:Bool -> q:Bool -> {v:Bool | v <=> (p <=> q)} @-}
+False <=> False = True
+False <=> True  = False
+True  <=> True  = True
+True  <=> False = False
+
 -- | notes
 --
 --  * predicate is satisfiable if there exists an assignment that makes the
@@ -88,3 +96,22 @@ ex6 a b = (a && (a ==> b)) ==> b
 ex7 :: Bool -> Bool -> Bool
 {-@ ex7 :: Bool -> Bool -> TRUE @-}
 ex7 a b = a ==> ((a ==> b) ==> b)
+
+-- | predicates using iff
+
+exDeMorgan1 :: Bool -> Bool -> Bool
+{-@ exDeMorgan1 :: Bool -> Bool -> TRUE @-}
+exDeMorgan1 a b = not (a || b) <=> (not a && not b)
+
+-- | exercise: demorgan's law
+--
+-- "fig the incorrect .."
+
+{-@ ignore exDeMorgan2 @-}
+exDeMorgan2 :: Bool -> Bool -> Bool
+{-@ exDeMorgan2 :: Bool -> Bool -> TRUE @-}
+exDeMorgan2 a b = not (a && b) <=> (not a && not b)
+
+exDeMorgan2completed :: Bool -> Bool -> Bool
+{-@ exDeMorgan2completed :: Bool -> Bool -> TRUE @-}
+exDeMorgan2completed a b = not (a && b) <=> (not a || not b)
