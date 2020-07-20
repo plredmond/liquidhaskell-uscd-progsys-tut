@@ -19,6 +19,7 @@ False ==> False = True
 False ==> True  = True
 True  ==> True  = True
 True  ==> False = False
+infixr 9 ==>
 
 -- | notes
 --
@@ -50,10 +51,6 @@ ex2 :: Bool -> Bool
 {-@ ex2 :: Bool -> FALSE @-}
 ex2 b = b && not b
 
--- ** exercise: implications and or
-
--- CONTINUE: this exercise
-
 -- | predicates using implication
 --
 -- "p ==> q" reads "if p is true then q must also be true"
@@ -66,4 +63,28 @@ ex4 :: Bool -> Bool -> Bool
 {-@ ex4 :: Bool -> Bool -> TRUE @-}
 ex4 a b = (a && b) ==> b
 
--- CONTINUE: ex4
+-- | exercise: Implications and Or
+--
+-- "shuffle the variables around without changing the operators to make the formula valid"
+
+{-@ ignore ex3' @-}
+ex3' :: Bool -> Bool -> Bool
+{-@ ex3' :: Bool -> Bool -> TRUE @-}
+ex3' a b = (a || b) ==> a
+
+ex3completed :: Bool -> Bool -> Bool
+{-@ ex3completed :: Bool -> Bool -> TRUE @-}
+ex3completed a b = a ==> (a || b)
+
+-- | the following encode modus ponens
+--
+-- "if you know that a implies b and you know a is true then it must be the
+-- case that b is true"
+
+ex6 :: Bool -> Bool -> Bool
+{-@ ex6 :: Bool -> Bool -> TRUE @-}
+ex6 a b = (a && (a ==> b)) ==> b
+
+ex7 :: Bool -> Bool -> Bool
+{-@ ex7 :: Bool -> Bool -> TRUE @-}
+ex7 a b = a ==> ((a ==> b) ==> b)
