@@ -62,4 +62,8 @@ ex3 :: Bool -> Bool -> Bool
 {-@ ex3 :: Bool -> Bool -> TRUE @-}
 ex3 a b = (a && b) ==> a
 
+ex4 :: Bool -> Bool -> Bool
+{-@ ex4 :: Bool -> Bool -> TRUE @-}
+ex4 a b = (a && b) ==> b
+
 -- CONTINUE: ex4
