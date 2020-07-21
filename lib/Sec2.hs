@@ -180,3 +180,5 @@ congruence     :: (Int -> Int) -> Int -> Int -> Bool
 congruence f x y = (x == y) ==> (f x == f y)
 -- FIXME: this doesn't work
 {-@ ignore congruence @-}
+
+-- CONTINUE: uninterpreted functions section
