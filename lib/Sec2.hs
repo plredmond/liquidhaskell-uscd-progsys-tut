@@ -29,6 +29,8 @@ False <=> True  = False
 True  <=> True  = True
 True  <=> False = False
 
+-- ** examples: propositions
+
 -- | notes
 --
 --  * predicate is satisfiable if there exists an assignment that makes the
@@ -115,3 +117,66 @@ exDeMorgan2 a b = not (a && b) <=> (not a && not b)
 exDeMorgan2completed :: Bool -> Bool -> Bool
 {-@ exDeMorgan2completed :: Bool -> Bool -> TRUE @-}
 exDeMorgan2completed a b = not (a && b) <=> (not a || not b)
+
+-- ** examples: arithmetic
+
+ax0 :: Bool
+{-@ ax0 :: TRUE @-}
+ax0 = 1 + 1 == (2 :: Int) -- addition of ones is equal to two
+
+{-@ ignore ax0' @-}
+ax0' :: Bool
+{-@ ax0' :: TRUE @-}
+ax0' = 1 + 1 == (3  :: Int) -- addition of ones is equal to three
+
+ax1 :: Int -> Bool
+{-@ ax1 :: Int -> TRUE @-}
+ax1 x = x < x + 1 -- add to a number and the result is greater
+
+ax2 :: Int -> Bool
+{-@ ax2 :: Int -> TRUE @-}
+ax2 x = (x < 0) ==> (0 <= 0 - x) -- subtract a negative number to get a positive number
+
+ax3 :: Int -> Int -> Bool
+{-@ ax3 :: Int -> Int -> TRUE @-}
+ax3 x y = (0 <= x) ==> (0 <= y) ==> (0 <= x + y) -- the sum of two natural numbers is a natural number
+
+ax4 :: Int -> Int -> Bool
+{-@ ax4 :: Int -> Int -> TRUE @-}
+ax4 x y = (x == y - 1) ==> (x + 2 == y + 1) -- if y is one greater than x, then two greater than x is one greater than y
+
+ax5 :: Int -> Int -> Int -> Bool
+{-@ ax5 :: Int -> Int -> Int -> TRUE @-}
+ax5 x y z = (x <= 0 && x >= 0) -- constraint x to be zero
+        ==> (y == x + z) -- constrain y to z plus x=zero
+        ==> (y == z) -- constraint y to z
+
+-- | exercise: Addition and Order
+--
+-- "why is the formula not valid? change the hypothesis (left of ==>) to make it valid"
+
+{-@ ignore ax6 @-}
+ax6 :: Int -> Int -> Bool
+{-@ ax6 :: Int -> Int -> TRUE @-}
+ax6 x y = True ==> (x <= x + y) -- it is implied that x is less-equal than x plus y
+
+-- this is invalid because y could be negative
+
+ax6completed :: Int -> Int -> Bool
+{-@ ax6completed :: Int -> Int -> TRUE @-}
+ax6completed x y = (y >= 0) ==> (x <= x + y)
+
+-- * examples: uninterpreted function
+
+-- z3 only knows that functions return equal outputs on equal inputs
+-- "axiom of congruence"
+
+-- | define an uninterpreted function
+{-@ measure f :: Int -> Int @-}
+
+-- | "test the axiom of congruence"
+congruence     :: (Int -> Int) -> Int -> Int -> Bool
+{-@ congruence :: (Int -> Int) -> Int -> Int -> TRUE @-}
+congruence f x y = (x == y) ==> (f x == f y)
+-- FIXME: this doesn't work
+{-@ ignore congruence @-}
